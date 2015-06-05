@@ -16,17 +16,14 @@ if (_transportcraft == "CH-47 Chinook") then {
 
     _cargo1 = _supply createVehicle getMarkerPos "sp_e";
 
-
     // For basecontainers and other "not slingloadable" objects:
 
     _cargo1 setMass [5000, 0];
-
 
     containerrope1 = ropeCreate [_CH47F, "slingload0", _cargo1, [0, 1.0, 1], 10];
     containerrope2 = ropeCreate [_CH47F, "slingload0", _cargo1, [0, -1.0, 1], 10];
     containerrope3 = ropeCreate [_CH47F, "slingload0", _cargo1, [3.0, 0, 1], 10];
     containerrope4 = ropeCreate [_CH47F, "slingload0", _cargo1, [-3.0, 0, 1], 10];
-
 
     // For all slingloadable objects:
 
@@ -69,27 +66,18 @@ if (_transportcraft == "CH-47 Chinook") then {
     _wp4 setWaypointStatements ["true", "cleanUpveh = vehicle leader this; {deleteVehicle _x} forEach crew cleanUpveh + [cleanUpveh];"];
 	};
 
-
 if (_transportcraft == "C-17 Globemaster III") then {
-
-	_transC17 = createVehicle ["USAF_C17", getMarkerPos "sp_e", [], 0, "FLY"];
-
-	createVehicleCrew (_transC17);
-	_cargo1 = _supply createVehicle getMarkerPos "sp_e";
-	null = [_transC17, _cargo1] spawn Lala_C17_fnc_forceLoadCargo;
-
-	_transC17 setVehicleLock "LOCKED";
-
-	_transC17 landAt 5;
-
-	_grp2 = group _transC17;
+    _transC17 = createVehicle ["USAF_C17", getMarkerPos "sp_e", [], 0, "FLY"];
+    createVehicleCrew (_transC17);
 	
-	_transC17 addEventHandler ["LandedStopped", {
-    
-	hint "Halteposition erreicht!";
+    _cargo1 = _supply createVehicle getMarkerPos "sp_e";
+    [_transC17, _cargo1] call Lala_C17_fnc_forceLoadCargo;
+    _transC17 setVehicleLock "LOCKED";
+
+    _transC17 landAt 5;
 	
-    {deleteVehicle _x;} forEach crew _transC17;
-	
-	}];
-	
-	};
+    _transC17 addEventHandler ["LandedStopped", {
+        hint "Your supply has arrived";
+        {deleteVehicle _x} forEach crew (_this select 0);
+        }];
+    };
